@@ -240,3 +240,37 @@ dotnet dotnet-ef database update
 dotnet run 
 ```
 
+## other login options
+
+```csharp
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // The lifetime of the authentication cookie (e.g., user is signed out after 30 minutes of total time)
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+
+    // Enables sliding expiration: if the user is active, the cookie lifetime is reset halfway through
+    options.SlidingExpiration = true;
+
+    // Optional: Custom login path if a user's session times out and they need to re-authenticate
+    options.LoginPath = "/Account/Login";
+    
+    // Optional: Access denied path
+    options.AccessDeniedPath = "/Account/AccessDenied";
+
+    options.SignIn.RequireConfirmedAccount = true;     // Requires email confirmation before sign-in
+    options.SignIn.RequireConfirmedEmail = false;       // Requires confirmed email address specifically
+    options.SignIn.RequireConfirmedPhoneNumber = false; // Requires confirmed phone number
+
+    options.Password.RequiredLength = 8;           // Minimum password length
+    options.Password.RequiredUniqueChars = 1;      // Minimum number of unique characters
+    options.Password.RequireDigit = true;          // Requires 0-9
+    options.Password.RequireLowercase = true;      // Requires a-z
+    options.Password.RequireUppercase = true;      // Requires A-Z
+    options.Password.RequireNonAlphanumeric = true;// Requires special character (e.g. !@#)
+
+    options.Lockout.AllowedForNewUsers = true;     // Enables lockout for newly created accounts
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); // Duration of lockout after max failures
+    options.Lockout.MaxFailedAccessAttempts = 5;   // Number of failed attempts before lockout triggers
+});
+```
+
